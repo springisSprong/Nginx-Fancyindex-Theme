@@ -52,20 +52,26 @@ if (!!(window.history && history.pushState)) {
     } else if (window.ActiveXObject) {
       req = new ActiveXObject('Microsoft.XMLHTTP');
     }
-    req.open('GET', href, false);
-    req.send(null);
-    if (req.status == 200) {
-      var target = document.getElementsByClassName('box-content')[0];
-      var div = document.createElement('div');
-      div.innerHTML = req.responseText;
-      var elements = div.getElementsByClassName('box-content')[0];
-      target.innerHTML = elements.innerHTML;
-      initHistory();
-      return true;
-    // Terrible error catching implemented! Basically, if the ajax request fails
-    // we'll just refresh the entire page with the new URL.
-    } else {
-      window.location.replace(href);
+  
+    try {
+      req.open('GET', href, false);
+      req.send(null);
+  
+      if (req.status == 200) {
+        var target = document.getElementsByClassName('box-content')[0];
+        var div = document.createElement('div');
+        div.innerHTML = req.responseText;
+        var elements = div.getElementsByClassName('box-content')[0];
+        target.innerHTML = elements.innerHTML;
+        initHistory();
+        return true;
+      // Terrible error catching implemented! Basically, if the ajax request fails
+      // we'll just refresh the entire page with the new URL.
+      } else {
+        window.location.replace(href);
+      }
+    } catch (e) {
+       window.location.href = href;
     }
     return false;
   };
